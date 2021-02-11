@@ -10,19 +10,6 @@ object DbNsfp {
   import DbNsfpInputFields._
   import DbNsfpOutputFields._
 
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
   // ===========================================================================
   def apply
       (in  : FilePath,
