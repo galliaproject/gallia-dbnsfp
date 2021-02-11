@@ -1,7 +1,6 @@
 package galliaexample.dbnsfp
 
 import aptus.{Anything_, String_}
-import aptus.Unit_
 import aptus.FilePath
 import gallia._
 
@@ -11,16 +10,18 @@ object DbNsfp {
   import DbNsfpInputFields._
   import DbNsfpOutputFields._
 
-  // ===========================================================================
-  def main(args: Array[String]): Unit = {
-    ().time.seconds {
-      apply(
-        // original is at ftp://dbnsfp:dbnsfp@dbnsfp.softgenetics.com/dbNSFP4.1a.zip
-        //   TODO: ask if could include small subset here for people who just want to test this out (and avoid unnecessary traffic for their FTP server)
-        "/data/dbnsfp/4.0/dbNSFP4.0a_variant.chr21.1k.gz", // first 1K lines only
-        "/tmp/dbnsfp.jsons.gz" ); ()
-    }
-  }
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
   // ===========================================================================
   def apply
@@ -94,7 +95,8 @@ object DbNsfp {
           .zipStrings(
               GTEx_V7_gene   ~> gene,
               GTEx_V7_tissue ~> tissue)
-            .splitBy(MainTupleSeparator).underNewKey(V7)
+            .splitBy(MainTupleSeparator)
+              .underNewKey(V7)
           .nest(V7).under(GTEx)
 
           // ---------------------------------------------------------------------------
