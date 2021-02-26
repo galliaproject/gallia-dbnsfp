@@ -333,7 +333,7 @@ into objects like:
 }
 ```
 
-<a name="references">
+<a name="references"></a>
 ### dnNSFP References
 - _Liu X, Jian X, and Boerwinkle E. 2011. dbNSFP: a lightweight database of human non-synonymous SNPs and their functional predictions. Human Mutation. 32:894-899._
 - _Liu X, Jian X, and Boerwinkle E. 2013. dbNSFP v2.0: A Database of Human Non-synonymous SNVs and Their Functional Predictions and Annotations. Human Mutation. 34:E2393-E2402._
