@@ -1,6 +1,6 @@
-This is only intended to showcase processing in Gallia, it is in now complete nor thoroughly tested at the moment. Use output at your own risk.
+This is only intended to showcase processing in Gallia, it is not complete nor thoroughly tested at the moment. Use output at your own risk.
 
-See gallia-core [README](https://github.com/galliaproject/gallia-core/blob/master/README.md).
+For more information, see gallia-core [documentation](https://github.com/galliaproject/gallia-core/blob/init/README.md), in particular the bioinformatics examples [section](https://github.com/galliaproject/gallia-core/blob/init/README.md#bioinformatics-examples).
 
 Uses [_Gallia_ transformations](https://github.com/galliaproject/gallia-dbnsfp/blob/init/src/main/scala/galliaexample/dbnsfp/DbNsfp.scala#L14)
 
@@ -332,4 +332,11 @@ into objects like:
   ]
 }
 ```
+
+<a name="references">### dnNSFP References
+- _Liu X, Jian X, and Boerwinkle E. 2011. dbNSFP: a lightweight database of human non-synonymous SNPs and their functional predictions. Human Mutation. 32:894-899._
+- _Liu X, Jian X, and Boerwinkle E. 2013. dbNSFP v2.0: A Database of Human Non-synonymous SNVs and Their Functional Predictions and Annotations. Human Mutation. 34:E2393-E2402._
+- _Liu X, Wu C, Li C, and Boerwinkle E. 2016. dbNSFP v3.0: A One-Stop Database of Functional Predictions and Annotations for Human Non-synonymous and Splice Site SNVs. Human Mutation. 37:235-241._
+- _Liu X, Li C, Mou C, Dong Y, and Tu Y. 2020. dbNSFP v4: a comprehensive database of transcript-specific functional predictions and annotations for human nonsynonymous and splice-site SNVs. Genome Medicine. 12:103._
+- _Dong C, Wei P, Jian X, Gibbs R, Boerwinkle E, Wang K* and Liu X*. (2015) Comparison and integration of deleteriousness prediction methods for nonsynonymous SNVs in whole exome sequencing studies. Human Molecular Genetics 24(8):2125-2137. *corresponding authors [PDF]_
 

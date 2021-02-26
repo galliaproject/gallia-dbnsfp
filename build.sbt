@@ -13,8 +13,8 @@ lazy val supportedScalaVersions = List(scala213, scala212)
 // ===========================================================================
 lazy val root = (project in file("."))
   .settings(
-    name         := "gallia-dbnsfp",
-    version      := "0.1.0",
+    name               := "gallia-dbnsfp",
+    version            := "0.1.0",
     scalaVersion       := supportedScalaVersions.head,
     crossScalaVersions := supportedScalaVersions)
   .dependsOn(RootProject(file("../gallia-core")))
