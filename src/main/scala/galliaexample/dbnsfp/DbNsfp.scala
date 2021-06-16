@@ -1,6 +1,6 @@
 package galliaexample.dbnsfp
 
-import aptus.{Anything_, String_}
+import aptus.{Anything_, String_, Seq_}
 import aptus.FilePath
 import gallia._
 
@@ -53,8 +53,8 @@ object DbNsfp {
        .generate(shorthand).from(
             _.string(chr),
             _.string(pos),
-            _.string( ref),
-            _.string( alt))
+            _.string(ref),
+            _.string(alt))
           .using { (chr, pos, ref, alt) =>
             assert(BasicNucleotideSet.contains(ref))
             assert(BasicNucleotideSet.contains(alt))
@@ -270,11 +270,9 @@ object DbNsfp {
       .forPathsMatching(_.key.containedIn(Converting.   RealKeys)).zen(_.convert(_).toDouble)
 
       // ---------------------------------------------------------------------------
-      .transformObject(rankscores).using {
-        _.forLeafPaths(_.convert(_).toDouble) }
-
-      .transformObject('phyloP).using {
-        _.forLeafPaths(_.convert(_).toDouble) }
+      .forEachKey(rankscores, phyloP, phastCons).zen {
+        _.transformObject(_).using {
+          _.forLeafPaths(_.convert(_).toDouble) } }
 
       // ---------------------------------------------------------------------------
       // TODO:

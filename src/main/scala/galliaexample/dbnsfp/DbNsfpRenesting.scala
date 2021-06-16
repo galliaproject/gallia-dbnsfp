@@ -37,9 +37,9 @@ object DbNsfpRenesting {
     else if (key.endsWith("_confidence_value")) key.stripSuffix("_value")
 
     // order matters
-    // eg: "SiPhy_29way_logOdds_rankscore" -> "rankscores_SiPhy_29way_logOdds_raw"
-    else if (key.endsWith("_converted_rankscore")) "rankscores_".append(key.replace("_converted_rankscore", "_converted"))
-    else if (key.endsWith(          "_rankscore")) "rankscores_".append(key.replace(          "_rankscore", "_raw"      ))
+    // eg: "SiPhy_29way_logOdds_rankscore" -> "rankscores_SiPhy_29way_logOdds"
+    else if (key.endsWith("_converted_rankscore")) "rankscores_converted_".append(key.replace("_converted_rankscore", ""))
+    else if (key.endsWith(          "_rankscore")) "rankscores_"          .append(key.replace(          "_rankscore", ""))
 
     else if (key.containedIn(MissingScoreSuffix)) key.append("_score")
     else if (WayExcerpts.exists(key.contains))    WayRegex.replaceAllIn(key, "_$1way")

@@ -22,6 +22,10 @@ object DbNsfpConstants {
           aapos           ,
           codon_degeneracy,
           genename        ,
+
+          // ---------------------------------------------------------------------------
+          cds_strand      ,
+          codonpos        ,
           refcodon        ,
 
           // ---------------------------------------------------------------------------
@@ -69,12 +73,6 @@ object DbNsfpConstants {
           PROVEAN_pred ,
           PROVEAN_score,
 
-          Polyphen2_HDIV_pred ,
-          Polyphen2_HDIV_score,
-
-          Polyphen2_HVAR_pred ,
-          Polyphen2_HVAR_score,
-
           SIFT4G_pred ,
           SIFT4G_score,
 
@@ -87,8 +85,17 @@ object DbNsfpConstants {
           Uniprot_entry,
 
           VEP_canonical,
-
-          VEST4_score)
+        ) ++
+      // ---------------------------------------------------------------------------
+      (if (!DbNsfpUtils.isAcademicUse) Nil
+       else Seq(
+          Polyphen2_HDIV_pred ,
+          Polyphen2_HDIV_score,
+          
+          Polyphen2_HVAR_pred ,
+          Polyphen2_HVAR_score,
+          
+          VEST4_score))
   }
 
   // ===========================================================================
@@ -97,6 +104,9 @@ object DbNsfpConstants {
     val GeneObjectExplicitRenamings = Map[KeyW, KeyW](
         aapos                      -> "AA@position",
         genename                   -> 'symbol,
+ 
+       cds_strand                  -> "cds@strand",
+       codonpos                    -> "codon_position",
 
         refcodon                   -> 'codon_ref, // so gets picked up with other codon_* like fields
         Uniprot_acc                -> 'accession,
@@ -137,10 +147,6 @@ object DbNsfpConstants {
       `hg18_pos(1-based)` -> 'locus_hg18_position,
            'pos           -> 'locus_hg19_position,
 
-       cds_strand         -> 'locus_cds_strand,
-
-       codonpos           -> "codon@position",
-
         // ---------------------------------------------------------------------------
        // misc
 
@@ -156,19 +162,18 @@ object DbNsfpConstants {
 
       // ---------------------------------------------------------------------------
       // Eigen
-      `Eigen-raw_coding`              -> 'Eigen_coding_full_raw_score    ,
-      `Eigen-raw_coding_rankscore`    -> 'Eigen_coding_full_raw_rankscore,
-      `Eigen-pred_coding`             -> 'Eigen_coding_full_phred        , // likely typo (pred vs phred)
+      `Eigen-raw_coding`              -> 'Eigen_coding_full_raw_score,
+      `Eigen-raw_coding_rankscore`    -> 'Eigen_coding_full_rankscore,
+      `Eigen-pred_coding`             -> 'Eigen_coding_full_phred    , // likely typo (pred vs phred)
 
-      `Eigen-PC-raw_coding`           -> 'Eigen_coding_PC_raw_score      ,
-      `Eigen-PC-raw_coding_rankscore` -> 'Eigen_coding_PC_raw_rankscore  ,
-      `Eigen-PC-phred_coding`         -> 'Eigen_coding_PC_phred          ,
+      `Eigen-PC-raw_coding`           -> 'Eigen_coding_PC_raw_score  ,
+      `Eigen-PC-raw_coding_rankscore` -> 'Eigen_coding_PC_rankscore  ,
+      `Eigen-PC-phred_coding`         -> 'Eigen_coding_PC_phred      ,
 
 
       // ---------------------------------------------------------------------------
       // LRT
 
-      LRT_converted_rankscore -> 'LRT_convertedrankscore, // only converted rankscore that not at the top level...
       LRT_pred                -> 'LRT_prediction,
       LRT_Omega               -> 'LRT_omega,
 
@@ -177,13 +182,6 @@ object DbNsfpConstants {
       // MutPred; Top5features is handled separately
       MutPred_protID   -> 'MutPred_protein_id,
       MutPred_AAchange -> 'MutPred_AA_change ,
-
-
-      // ---------------------------------------------------------------------------
-      // X-way
-
-      phyloP17way_primate    -> 'phyloP17way_primate_value,
-      phastCons17way_primate -> 'phastCons17way_primate_value,
 
       // ---------------------------------------------------------------------------
       // misc

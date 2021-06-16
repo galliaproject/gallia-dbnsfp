@@ -145,6 +145,8 @@ object DbNsfpOutputFields {
 
   val genes = 'genes
 
+  val phyloP    = 'phyloP
+  val phastCons = 'phastCons
 }
 
 // ===========================================================================
