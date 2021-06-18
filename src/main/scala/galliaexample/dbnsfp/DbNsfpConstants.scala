@@ -139,13 +139,13 @@ object DbNsfpConstants {
     val RootObjectExplicitRenamings = Map[KeyW, KeyW](
 
       // locus
-          `#chr`          -> 'locus_hg20_chromosome,
+           'chr           -> 'locus_hg38_chromosome,
       `hg18_chr`          -> 'locus_hg18_chromosome,
-           'chr           -> 'locus_hg19_chromosome,
+      `hg19_chr`          -> 'locus_hg19_chromosome,
 
-           `pos(1-based)` -> 'locus_hg20_position,
+           'pos           -> 'locus_hg38_position,
       `hg18_pos(1-based)` -> 'locus_hg18_position,
-           'pos           -> 'locus_hg19_position,
+      `hg19_pos(1-based)` -> 'locus_hg19_position,
 
         // ---------------------------------------------------------------------------
        // misc

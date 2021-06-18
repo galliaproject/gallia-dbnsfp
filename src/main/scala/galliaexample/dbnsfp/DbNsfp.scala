@@ -1,6 +1,6 @@
 package galliaexample.dbnsfp
 
-import aptus.{Anything_, String_, Seq_}
+import aptus.{Anything_, String_}
 import aptus.FilePath
 import gallia._
 
@@ -17,14 +17,16 @@ object DbNsfp {
     in
 
       .stream { _.tsv.noInferring.iteratorMode }
-      .logProgress(100)
+      .logProgress(1000)
 
       // ===========================================================================
       // handle trivially missing values
 
       // so gets picked up by next removal (only fields with dash instead of dot (eg for 1:986633))
-      .translate(MutPred_score, MutPred_Top5features).using("-" -> MainMissingValue)
-
+      .translate(MutPred_score, MutPred_Top5features).using(
+          "-" -> MainMissingValue,
+          "," -> MainMissingValue /* only for "18:58537057;A>T", "19:41425799;A>C", "20:2655741;G>A" and "20:51613792;G>A" (in 4.0c) */)
+      
       // leave more complex ones untouched for now
       .forAllKeys(_.removeIfValueFor(_).is(MainMissingValue))
 
@@ -32,8 +34,8 @@ object DbNsfp {
 
       // ===========================================================================
       .rename(
-           hg19_chr           ~> chr,
-          `hg19_pos(1-based)` ~> pos)
+          `#chr`         ~> chr,
+          `pos(1-based)` ~> pos)
 
       // ---------------------------------------------------------------------------
       .filterBy(
@@ -230,8 +232,8 @@ object DbNsfp {
 
       .transformObject(MutPred).using {
         _ .rename('Top5features ~> top_5_features)
-          .split          (        top_5_features ).by("; ") // has space following semi-colon (only one like that)
-          .transformString(        top_5_features).using(MutPredTransformer.apply) }
+          .split                  (top_5_features).by("; ") // has space following semi-colon (only one like that)
+          .transformString        (top_5_features).using(MutPredTransformer.apply) }
 
       // ===========================================================================
       // misc

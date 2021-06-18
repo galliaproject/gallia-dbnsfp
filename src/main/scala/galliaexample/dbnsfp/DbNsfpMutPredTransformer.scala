@@ -10,7 +10,7 @@ object MutPredTransformer {
     Raw
       .parseStringOpt(value)
       .map(Transformed.fromRaw)
-      .get
+      .getOrElse(throw new IllegalStateException(s"value=${value.quote}"))	
 
   // ===========================================================================
   case class Raw(
