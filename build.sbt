@@ -14,15 +14,20 @@ lazy val supportedScalaVersions = List(scala213, scala212)
 lazy val root = (project in file("."))
   .settings(
     name               := "gallia-dbnsfp",
-    version            := "0.1.0",
+    version            := "0.2.0",
+    mainClass          := Some("galliaexample.dbnsfp.DbNsfpDriver"),
     scalaVersion       := supportedScalaVersions.head,
     crossScalaVersions := supportedScalaVersions)
-  .dependsOn(RootProject(file("../gallia-core")))
 
+// ===========================================================================
+lazy val galliaVersion = "0.2.0"
+
+libraryDependencies += "io.github.galliaproject" %% "gallia-core" % galliaVersion // in turns depends on aptus-core
+    
 // ===========================================================================
 // TODO: more + inherit from core
 scalacOptions in Compile ++=
-  Seq("-Ywarn-value-discard") ++ 
+  Seq("-Ywarn-value-discard") ++
   (scalaBinaryVersion.value match {
     case "2.13" => Seq("-Ywarn-unused:imports")
     case _      => Seq("-Ywarn-unused-import" ) })
