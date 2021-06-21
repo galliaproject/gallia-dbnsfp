@@ -1,11 +1,17 @@
 <p align="center"><img src="./images/logo.png" alt="icon"></p>
 
-<ins>__Note__</ins>: _This is only intended to showcase processing in Gallia, it is not complete nor thoroughly tested at the moment. Use output at your own risk._
-
 For more information, see gallia-core [documentation](https://github.com/galliaproject/gallia-core/blob/init/README.md#introducing-gallia-a-scala-library-for-data-manipulation), in particular the bioinformatics examples [section](https://github.com/galliaproject/gallia-core/blob/init/README.md#bioinformatics-examples).
 
 <a name="description"></a>
 ### Description
+
+<a name="test-run"></a>
+Test run with:
+
+```
+sbt run
+```
+
 Uses _Gallia_ [transformations](https://github.com/galliaproject/gallia-dbnsfp/blob/init/src/main/scala/galliaexample/dbnsfp/DbNsfp.scala#L14)
 
 to turn TSV rows such as:
@@ -338,6 +344,7 @@ into objects like:
   ]
 }
 ```
+
 
 <a name="references"></a>
 ### dnNSFP References
