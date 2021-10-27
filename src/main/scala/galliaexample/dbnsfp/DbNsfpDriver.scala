@@ -356,7 +356,7 @@ object DbNsfpDriver extends App {
   private lazy val (input, output) = 
     args
       .toSeq
-      .as.noneIf(_.isEmpty)
+      .in.noneIf(_.isEmpty)
        match {
         case None                     => new java.io.File("./src/main/resources/example.gz").getAbsolutePath -> "/tmp/dbnsfp.jsonl.gz" // i know...
         case Some(Seq(input, output)) => input                                                               -> output }

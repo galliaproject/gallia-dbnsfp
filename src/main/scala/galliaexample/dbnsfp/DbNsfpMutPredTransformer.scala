@@ -82,9 +82,9 @@ object MutPredTransformer {
 
       def fromRaw(raw: Raw): Transformed =
         Transformed(
-          raw.`type`     .uncapitalize.thn(MutPredType      .withName),
-          raw.change_type.             thn(MutPredChangeType.withName),
-          raw.location.as.noneIf(_.isEmpty),
+          raw.`type`     .uncapitalizeFirst.thn(MutPredType      .withName),
+          raw.change_type                  .thn(MutPredChangeType.withName),
+          raw.location.in.noneIf(_.isEmpty),
           raw.p_value.toDouble )
     }
 
