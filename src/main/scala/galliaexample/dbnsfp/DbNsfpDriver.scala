@@ -7,10 +7,9 @@ object DbNsfpDriver extends App {
   
   ().time.seconds {
     // uncomment for full runs
-    //gallia.Hacks.DisableRuntimeChecks = true
-    //gallia.Hacks.IteratorParGroupSize = Some(50) // combined with -Xmx8g -Xms8g
-
-    DbNsfp(InputFile, OutputFile)
+    //   gallia.Hacks.disableRuntimeChecks.setToTrue()
+    //   gallia.Hacks.iteratorParGroupSize.setValue(50) // combined with -Xmx8g -Xms8g
+    DbNsfp(InputFile).write(OutputFile)
   }  
 
   // ===========================================================================
@@ -354,8 +353,8 @@ object DbNsfpDriver extends App {
 
   // ---------------------------------------------------------------------------  
   private lazy val (input, output) = 
-    args
-      .toSeq
+    Option(args)
+      .toSeq.flatten.toSeq
       .in.noneIf(_.isEmpty)
        match {
         case None                     => new java.io.File("./src/main/resources/example.gz").getAbsolutePath -> "/tmp/dbnsfp.jsonl.gz" // i know...

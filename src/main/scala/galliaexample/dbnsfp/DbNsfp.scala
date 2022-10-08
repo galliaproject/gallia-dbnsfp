@@ -11,12 +11,11 @@ object DbNsfp {
   import DbNsfpOutputFields._
 
   // ===========================================================================
-  def apply
-      (in  : FilePath,
-       out : FilePath) =
+  def apply(in: FilePath): HeadS =
     in
 
-      .stream { _.tsv.noInferring.iteratorMode }
+      .stream {
+        _.tsv.noInferring /* treat everything as string */ }
       .logProgress(1000)
 
       // ===========================================================================
@@ -66,10 +65,7 @@ object DbNsfp {
             s"${chr}:${pos.toLong};${ref}>${alt}" }
 
       // ---------------------------------------------------------------------------
-      .map(rejig(_))
-
-      // ---------------------------------------------------------------------------
-      .write(out)
+      .map(rejig)
 
   // ===========================================================================
   def rejig(obj: HeadU): HeadU = {
@@ -105,7 +101,7 @@ object DbNsfp {
                 .underNewKey(genes)
 
             // handle the "." parts of eg ".;.;.;.;." or ".;.;.;YES;." (see "21:44473990;T>A" for instance)
-            .transformObjects(genes).using {
+            .transformAllEntities(genes).using {
               _.forAllKeys {
                 _.removeIfValueFor(_).is(MainMissingValue) } }
 
@@ -125,7 +121,7 @@ object DbNsfp {
               gnomAD_exomes_flag    ~> 'gnomAD_exomes_overall_flag )
 
           .forKeysMatching(_.startsWith("gnomAD_exomes_controls_"))
-            .zen {
+            .thn {
               _.rename(_).using {
                 _.replace( // eg: gnomAD_exomes_controls_AC ~> gnomAD_exomes_controls_overall_AC
                   "gnomAD_exomes_controls_",
@@ -134,7 +130,7 @@ object DbNsfp {
           .forKeysMatching { key =>
                key.startsWith("gnomAD_exomes_") &&
                key.notContains("overall_") }
-            .zen {
+            .thn {
               _.rename(_).using {
                 _.replace( // eg: gnomAD_exomes_POPMAX_AC ~> gnomAD_exomes_default_POPMAX_AC
                   "gnomAD_exomes_",
@@ -152,7 +148,7 @@ object DbNsfp {
               gnomAD_genomes_nhomalt          ~> 'gnomAD_genomes_overall_nhomalt,
               gnomAD_genomes_flag             ~> 'gnomAD_genomes_overall_flag )
 
-          .forKeysMatching(_.startsWith("gnomAD_genomes_controls_")).zen {
+          .forKeysMatching(_.startsWith("gnomAD_genomes_controls_")).thn {
             _.rename(_).using {
               _.replace( // eg: gnomAD_genomes_controls_AC ~> gnomAD_genomes_controls_overall_AC
                 "gnomAD_genomes_controls_",
@@ -161,7 +157,7 @@ object DbNsfp {
           .forKeysMatching { key =>
                key.startsWith("gnomAD_genomes_") &&
               !key.contains("overall_") }
-            .zen {
+            .thn {
               _.rename(_).using {
                 _.replace( // eg: gnomAD_genomes_POPMAX_AC ~> gnomAD_genomes_default_POPMAX_AC
                   "gnomAD_genomes_",
@@ -184,7 +180,7 @@ object DbNsfp {
         .forKeysMatching { key =>
             key.startsWith("ExAC_") &&
             key.notContains("_overall_") }
-          .zen {
+          .thn {
             _.rename(_).using {
               _.replace("ExAC_", "ExAC_default") } }
 
@@ -212,7 +208,7 @@ object DbNsfp {
       // there are ~700 underscores, most actually represent nesting
       // we use '@' temporarily to avoid unwanted renesting
 
-      .transformObjects(genes).using {
+      .transformAllEntities(genes).using {
         _ .rename(      Renesting.GeneObjectExplicitRenamings   ) // eg: "genename" to "symbol"
           .rename(DbNsfpRenesting.geneObjectRuleBasedRenamings _) // eg: append "iction" to "_pred"-ending fields
           .renestAllKeys.usingSeparator("_") }
@@ -223,14 +219,14 @@ object DbNsfp {
       .renestAllKeys.usingSeparator("_")
 
       // ---------------------------------------------------------------------------
-      .forPathsMatching(_.key.name.contains("@")).zen { // this is a fairly costly operation as is
+      .forPathsMatching(_.key.name.contains("@")).thn { // this is a fairly costly operation as is
         _.rename(_).using {
           _.replace("@", "_") } }
 
       // ===========================================================================
       // MutPred top 5 features
 
-      .transformObject(MutPred).using {
+      .transformEntity(MutPred).using {
         _ .rename('Top5features ~> top_5_features)
           .split                  (top_5_features).by("; ") // has space following semi-colon (only one like that)
           .transformString        (top_5_features).using(MutPredTransformer.apply) }
@@ -250,7 +246,7 @@ object DbNsfp {
       // ---------------------------------------------------------------------------
       // genes
 
-      .transformObjects(genes).using {
+      .transformAllEntities(genes).using {
         _ .convert(VEP_canonical).toStrictFlag("YES")
           .transformString(TSL).using(_.prepend("tsl"))
           .split(Interpro_domain).by(DbNsfpUtils.splitInterproDomain) }
@@ -260,7 +256,7 @@ object DbNsfp {
       //   (the gnomAD and the MutationTaster counterparts are handled in their dedicated processors)
       .split(rs_dbSNP151).by(";")
 
-      .transformObject(Geuvadis |> eQTL)
+      .transformEntity(Geuvadis |> eQTL)
           .using(_.split(target_gene).by(";"))
 
       .split(SiPhy |> `29way` |> pi).by(":") // only one like that
@@ -268,12 +264,12 @@ object DbNsfp {
       // ===========================================================================
       // conversions (to numbers)
 
-      .forPathsMatching(_.key.containedIn(Converting.IntegerKeys)).zen(_.convert(_).toInt   )
-      .forPathsMatching(_.key.containedIn(Converting.   RealKeys)).zen(_.convert(_).toDouble)
+      .forPathsMatching(_.key.containedIn(Converting.IntegerKeys)).thn(_.convert(_).toInt   )
+      .forPathsMatching(_.key.containedIn(Converting.   RealKeys)).thn(_.convert(_).toDouble)
 
       // ---------------------------------------------------------------------------
-      .forEachKey(rankscores, phyloP, phastCons).zen {
-        _.transformObject(_).using {
+      .forEachKey(rankscores, phyloP, phastCons).thn {
+        _.transformEntity(_).using {
           _.forLeafPaths(_.convert(_).toDouble) } }
 
       // ---------------------------------------------------------------------------

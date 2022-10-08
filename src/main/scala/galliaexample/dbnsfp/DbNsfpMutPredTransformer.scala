@@ -1,5 +1,6 @@
 package galliaexample.dbnsfp
 
+import scala.util.chaining._
 import enumeratum.{Enum, EnumEntry}
 import aptus.{Anything_, String_}
 
@@ -10,7 +11,7 @@ object MutPredTransformer {
     Raw
       .parseStringOpt(value)
       .map(Transformed.fromRaw)
-      .getOrElse(throw new IllegalStateException(s"value=${value.quote}"))	
+      .getOrElse(throw new IllegalStateException(s"value=${value.quote}"))
 
   // ===========================================================================
   case class Raw(
@@ -63,8 +64,8 @@ object MutPredTransformer {
 
         require(p_value >= 0, this)
         require(
-            (location. isEmpty && change_type.isInstanceOf[Unlocated]) ||
-            (location.nonEmpty && change_type.isInstanceOf[  Located]),
+            (location. isEmpty && !change_type.located) ||
+            (location.nonEmpty &&  change_type.located),
           this)
 
         // ---------------------------------------------------------------------------
@@ -82,8 +83,8 @@ object MutPredTransformer {
 
       def fromRaw(raw: Raw): Transformed =
         Transformed(
-          raw.`type`     .uncapitalizeFirst.thn(MutPredType      .withName),
-          raw.change_type                  .thn(MutPredChangeType.withName),
+          raw.`type`     .uncapitalizeFirst.pipe(MutPredType      .withName),
+          raw.change_type                  .pipe(MutPredChangeType.withName),
           raw.location.in.noneIf(_.isEmpty),
           raw.p_value.toDouble )
     }
@@ -99,41 +100,29 @@ object MutPredTransformer {
     }
 
   // ===========================================================================
-  sealed trait MutPredChangeType extends EnumEntry
+  sealed trait MutPredChangeType extends EnumEntry { def located: Boolean }
+
+    // ---------------------------------------------------------------------------
+    object MutPredChangeType extends Enum[MutPredChangeType] {
+      val values = findValues
 
       // ---------------------------------------------------------------------------
-      object MutPredChangeType extends Enum[MutPredChangeType] {
-        val values = Unlocated.values ++ Located.values
-      }
+      case object `MoRF binding`                   extends MutPredChangeType { val located  = false }
+      case object `disorder`                       extends MutPredChangeType { val located  = false }
+      case object `helix`                          extends MutPredChangeType { val located  = false }
+      case object `loop`                           extends MutPredChangeType { val located  = false }
+      case object `sheet`                          extends MutPredChangeType { val located  = false }
+      case object `solvent accessibility`          extends MutPredChangeType { val located  = false }
+      case object `relative solvent accessibility` extends MutPredChangeType { val located  = false }
+      case object `stability`                      extends MutPredChangeType { val located  = false }
 
-    // ===========================================================================
-    sealed trait Unlocated extends MutPredChangeType
-      object Unlocated extends Enum[Unlocated] {
-        val values = findValues
-
-        // ---------------------------------------------------------------------------
-        case object `MoRF binding`                   extends Unlocated
-        case object `disorder`                       extends Unlocated
-        case object `helix`                          extends Unlocated
-        case object `loop`                           extends Unlocated
-        case object `sheet`                          extends Unlocated
-        case object `solvent accessibility`          extends Unlocated
-        case object `relative solvent accessibility` extends Unlocated
-        case object `stability`                      extends Unlocated
-      }
-
-    // ===========================================================================
-    sealed trait Located extends MutPredChangeType
-      object Located extends Enum[Located] {
-        val values = findValues
-
-        // ---------------------------------------------------------------------------
-        case object `catalytic residue`              extends Located
-        case object `glycosylation`                  extends Located
-        case object `methylation`                    extends Located
-        case object `phosphorylation`                extends Located
-        case object `ubiquitination`                 extends Located
-      }
+      // ---------------------------------------------------------------------------
+      case object `catalytic residue`              extends MutPredChangeType { val located  = true }
+      case object `glycosylation`                  extends MutPredChangeType { val located  = true }
+      case object `methylation`                    extends MutPredChangeType { val located  = true }
+      case object `phosphorylation`                extends MutPredChangeType { val located  = true }
+      case object `ubiquitination`                 extends MutPredChangeType { val located  = true }
+    }
 
 }
 
